@@ -1,0 +1,12 @@
+.answer {
+  background-color: #f0f7fd;
+  border-color: #d0e3f0;
+  margin-bottom: 1.5rem;
+  padding: 1rem 2rem 1rem 1rem;
+  border-left: 0.5rem solid #d0e3f0;
+  cursor: pointer;  
+}
+
+.answer:hover {
+  background-color: #d0e3f0;
+}

@@ -1,0 +1,14 @@
+.turn {
+  /* background-color: white; */
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.turn > div {
+  /* background: red; */
+  height: 30rem;
+}
+
+.author-image {
+  max-width: 100%;
+}
