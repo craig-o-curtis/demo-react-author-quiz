@@ -1,10 +1,11 @@
 import React from 'react';
-
 import './Book.css';
 
-const Book = ({ title, onClick }) => {
+
+
+const Book = ({ title, handleClick }) => {
   return (
-    <div className="answer" onClick={() => {onClick(title) }} >
+    <div onClick={ () => handleClick( title ) } className="answer" >
       <p>{title}</p>
     </div>
   );

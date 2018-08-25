@@ -22,7 +22,7 @@ const Turn = ({ author, books, highlight, onAnswerSelected }) => {
 
       <div className="col-6">
         {/* { books.map( (title) =>  <p>{ title }</p>  ) } */}
-        { books.map( (title) =>  <Book title={title} key={title} onClick={onAnswerSelected} />  ) }
+        { books.map( (title) =>  <Book key={title} title={title} handleClick={onAnswerSelected} />  ) }
       </div>
 
     </div>

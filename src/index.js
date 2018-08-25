@@ -3,12 +3,13 @@ import ReactDOM from 'react-dom';
 import registerServiceWorker from './registerServiceWorker';
 
 import { shuffle, sample } from 'lodash';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, withRouter } from 'react-router-dom';
 
 
 import AuthorQuiz from './AuthorQuiz';
 
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import '../node_modules/font-awesome/css/font-awesome.css';
 import './index.css';
 import AddAuthorForm from './AddAuthorForm/AddAuthorForm';
 
@@ -72,14 +73,23 @@ function getTurnData( authors ) {
 
 }
 
-const state = {
-  // turnData : {
-  //   author : authors[0],
-  //   books : authors[0].books
-  // }
-  turnData : getTurnData( authors ),
-  highlight : 'none'
-};
+const resetState = () => {
+  return {
+    turnData : getTurnData( authors ),
+    highlight : 'none'
+  }
+}
+
+let state = resetState();
+
+// const state = {
+//   //// turnData : {
+//   ////   author : authors[0],
+//   ////   books : authors[0].books
+//   //// }
+//   turnData : getTurnData( authors ),
+//   highlight : 'none'
+// };
 
 function onAnswerSelected( chosen ) {
   const isCorrect = state.turnData.author.books.some( book => book === chosen );
@@ -87,16 +97,33 @@ function onAnswerSelected( chosen ) {
   reRender();
 } 
 
+function onAddAuthor( newAuthor, history ) {
+  authors.push( newAuthor );
+  // need to redirect to main app
+  history.push('/');
+}
+
+function onContinue() {
+  state = resetState();
+  reRender();
+}
+
 const App = () => {
-  return <AuthorQuiz {...state} onAnswerSelected={onAnswerSelected} />;
+  return <AuthorQuiz {...state} onAnswerSelected={onAnswerSelected} onContinue={onContinue} />;
 };
+
+// convert wrapper to result of withRouter call
+const AuthorWrapper = withRouter( ({ history }) => {
+  console.log(history)
+  return <AddAuthorForm onAddAuthor={(newAuthor) => onAddAuthor(newAuthor, history) } />;
+});
 
 function reRender() {
   ReactDOM.render(
     <BrowserRouter>
-      <React.Fragment>
+      <React.Fragment> {/* React.Fragment required to wrap routes */}
         <Route exact path="/" component={App} />
-        <Route exact path="/add" component={AddAuthorForm} />
+        <Route exact path="/add" component={AuthorWrapper} />
       </React.Fragment>
     </BrowserRouter>,
     document.getElementById('root'));

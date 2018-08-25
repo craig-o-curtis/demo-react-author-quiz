@@ -11,8 +11,8 @@ import Footer from './Footer/Footer';
 
 
 class AuthorQuiz extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     // get access to DOM node
       // then use ref in markup
     this.authorQuizNode = React.createRef();
@@ -20,9 +20,9 @@ class AuthorQuiz extends Component {
 
   // ** Like $postLink, called after DOM elements created
   componentDidMount() {
-    this.authorQuizNode.current.innerHTML += "<br />Set on the wrapped DOM Element. <strong>Unsafe</strong> since interpreted as HTML";
+    // this.authorQuizNode.current.innerHTML += "<br />Set on the wrapped DOM Element. <strong>Unsafe</strong> since interpreted as HTML";
   }
-
+  
   render() {
     return (
       <div className="AuthorQuiz" ref={this.authorQuizNode}>
@@ -36,7 +36,7 @@ class AuthorQuiz extends Component {
           {/* <Turn author={this.props.turnData.author} books={this.props.turnData.books} /> */}
           <Turn {...this.props.turnData} highlight={this.props.highlight} onAnswerSelected={this.props.onAnswerSelected} />
           {/* <Continue /> */}
-          <Continue />
+          <Continue show={this.props.highlight === 'correct'} onContinue={this.props.onContinue} />
           <p>
             <Link to="/add">Add an Author</Link>
           </p>

@@ -1,12 +1,13 @@
 import React from 'react';
 
-const Continue = () => {
+const Continue = ({show, onContinue}) => {
   return (
-    <div className="row">
-      <div className="jumbotron col-10 offset-1">
-        <h1>Author Quiz</h1>
-        <p>Select book written by the author shown:</p>
-      </div>
+    <div className="row continue d-flex">
+      { show 
+      ? <div className="col-11 d-flex justify-content-end">
+          <button className="btn btn-lg btn-primary" onClick={onContinue} >Continue</button>
+        </div>
+      : null }
     </div>
   );
 }
