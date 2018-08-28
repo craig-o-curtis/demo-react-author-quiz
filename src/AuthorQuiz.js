@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import logo from './logo.svg';
 import './AuthorQuiz.css';
 
@@ -50,4 +51,30 @@ class AuthorQuiz extends Component {
   }
 }
 
-export default AuthorQuiz;
+/** redux */
+// inward data
+const mapStateToProps = (state, ownProps) => {
+  return {
+    turnData : state.turnData,
+    highlight : state.highlight,
+  };
+}
+// outward events
+const mapDispatchToProps = (dispatch) => {
+   return {
+    onAnswerSelected : ( answer ) => {
+      dispatch({ 
+        type : 'ANSWER_SELECTED', 
+        answer
+      }); 
+    },
+    onContinue : () => {
+      dispatch({
+        type : 'CONTINUE'
+      })
+    }
+   }
+}
+
+// export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(AuthorQuiz);

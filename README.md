@@ -67,6 +67,9 @@ const Single = ({match}) => {
 }
 ```
 
-
-
-
+Redux Dev Tools
+1. Install extension https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd
+2. Add the following params to the createStore call:
+```jsx
+let store = Redux.createStore( reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() );
+```

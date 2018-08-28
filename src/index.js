@@ -3,7 +3,11 @@ import ReactDOM from 'react-dom';
 import registerServiceWorker from './registerServiceWorker';
 
 import { shuffle, sample } from 'lodash';
-import { BrowserRouter, Route, withRouter } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
+
+import * as Redux from 'redux';
+// import * as ReactRedux from 'react-redux';
+import { Provider } from 'react-redux';
 
 
 import AuthorQuiz from './AuthorQuiz';
@@ -12,6 +16,7 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../node_modules/font-awesome/css/font-awesome.css';
 import './index.css';
 import AddAuthorForm from './AddAuthorForm/AddAuthorForm';
+import { Object } from 'core-js';
 
 const authors = [
   {
@@ -58,7 +63,7 @@ const authors = [
   },
 ];
 
-function getTurnData( authors ) {
+const getTurnData = ( authors ) => {
   const allBooks = authors.reduce( (total, next) => {
     return total.concat( next.books );
   }, []);
@@ -70,65 +75,50 @@ function getTurnData( authors ) {
     books : fourRandomBooks,
     author : authors.find( (author) => author.books.some( ( title ) => title === answer ) )
   }
-
 }
 
-const resetState = () => {
-  return {
-    turnData : getTurnData( authors ),
-    highlight : 'none'
+const reducer = (state = { authors, turnData: getTurnData(authors), highlight: '' } , action) => {
+  switch (action.type) {
+    case 'ANSWER_SELECTED':
+      // calc if is correct
+      const isCorrect = state.turnData.author.books.some( book => book === action.answer );
+      return Object.assign(
+        {}, 
+        state, 
+        { highlight : isCorrect ? 'correct' : 'incorrect' }
+      );
+    case 'CONTINUE':
+      return Object.assign(
+        {},
+        state,
+        { highlight : '', turnData: getTurnData(authors) }
+      );
+    case 'ADD_AUTHOR':
+      return Object.assign(
+        {},
+        state,
+        { authors : state.authors.concat( [action.author] )}
+      );
+    default:
+      return state;
   }
 }
 
-let state = resetState();
 
-// const state = {
-//   //// turnData : {
-//   ////   author : authors[0],
-//   ////   books : authors[0].books
-//   //// }
-//   turnData : getTurnData( authors ),
-//   highlight : 'none'
-// };
+// let state = resetState(); // vanilla method
+let store = Redux.createStore( reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() );
 
-function onAnswerSelected( chosen ) {
-  const isCorrect = state.turnData.author.books.some( book => book === chosen );
-  state.highlight = isCorrect ? 'correct' : 'incorrect';
-  reRender();
-} 
 
-function onAddAuthor( newAuthor, history ) {
-  authors.push( newAuthor );
-  // need to redirect to main app
-  history.push('/');
-}
-
-function onContinue() {
-  state = resetState();
-  reRender();
-}
-
-const App = () => {
-  return <AuthorQuiz {...state} onAnswerSelected={onAnswerSelected} onContinue={onContinue} />;
-};
-
-// convert wrapper to result of withRouter call
-const AuthorWrapper = withRouter( ({ history }) => {
-  console.log(history)
-  return <AddAuthorForm onAddAuthor={(newAuthor) => onAddAuthor(newAuthor, history) } />;
-});
-
-function reRender() {
-  ReactDOM.render(
+ReactDOM.render(
     <BrowserRouter>
+      <Provider store={store}>
       <React.Fragment> {/* React.Fragment required to wrap routes */}
-        <Route exact path="/" component={App} />
-        <Route exact path="/add" component={AuthorWrapper} />
+        <Route exact path="/" component={AuthorQuiz} />
+        <Route exact path="/add" component={AddAuthorForm} />
       </React.Fragment>
+      </Provider>
     </BrowserRouter>,
-    document.getElementById('root'));
-}
-
-reRender();
+  document.getElementById('root')
+);
 
 registerServiceWorker();
